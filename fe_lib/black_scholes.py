@@ -24,17 +24,29 @@ def BSM(S, K, delta, r, sigma, T, optionType):
 
 
 def BSM_greeks(S, K, delta, r, sigma, T, optionType):
-    """BSM Delta, gamma, vega, vanna, volga. See http://www.nematrian.com/BlackScholesGreeksVanillaCalls."""
+    """BSM Delta, gamma, vega, vanna, volga, theta. See http://www.nematrian.com/BlackScholesGreeksVanillaCalls."""
     d1, d2 = _d1_d2(S, K, delta, r, sigma, T)
     gamma = exp(-delta * T) * norm.pdf(d1) / (S * sigma * sqrt(T))
     vega = S * exp(-delta * T) * norm.pdf(d1) * sqrt(T)
     vanna = -d2 * exp(-delta * T) * norm.pdf(d1) / sigma
     volga = d1 * d2 * S * exp(-delta * T) * norm.pdf(d1) * sqrt(T) / sigma
+    # theta is per unit of time (annual), i.e. dV/dT with a sign flip
+    common = -S * exp(-delta * T) * norm.pdf(d1) * sigma / (2 * sqrt(T))
     if optionType == "call":
         Delta = exp(-delta * T) * norm.cdf(d1)
+        theta = (
+            common
+            + delta * S * exp(-delta * T) * norm.cdf(d1)
+            - r * K * exp(-r * T) * norm.cdf(d2)
+        )
     else:
         Delta = -exp(-delta * T) * norm.cdf(-d1)
-    return Delta, gamma, vega, vanna, volga
+        theta = (
+            common
+            - delta * S * exp(-delta * T) * norm.cdf(-d1)
+            + r * K * exp(-r * T) * norm.cdf(-d2)
+        )
+    return Delta, gamma, vega, vanna, volga, theta
 
 
 def BSM_vega(S, K, delta, r, sigma, T):

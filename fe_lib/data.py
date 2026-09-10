@@ -8,7 +8,7 @@ from fe_lib.paths import DATA_DIR
 
 def load_spx_returns(filename="SPX.xlsx"):
     """Dates and SPX log-returns from the daily price series (Lecture 1)."""
-    df = pd.read_excel(DATA_DIR / filename, sheet_name=0, usecols="A:B", skiprows=5, nrows=8968)
+    df = pd.read_excel(DATA_DIR / filename, sheet_name=0, usecols="A:B", skiprows=5, nrows=9233)
     dates = pd.to_datetime(df.iloc[:, 0])
     SPX = df.iloc[:, 1].values
     SPXreturns = np.diff(np.log(SPX))

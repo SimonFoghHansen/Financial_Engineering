@@ -14,5 +14,5 @@ def save_and_show(relative_path=None, tight_layout=True):
     if tight_layout:
         plt.tight_layout()
     if relative_path is not None:
-        plt.savefig(LATEX_DIR / relative_path)
+        plt.savefig(LATEX_DIR / relative_path, facecolor="white")
     plt.show()
